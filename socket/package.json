@@ -11,7 +11,8 @@
     "serialport": "^9.2.4",
     "socket.io": "^2.4.0",
     "xbee": "^0.0.4",
-    "xbee-api": "^0.6.0"
+    "xbee-api": "^0.6.0",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "cross-env": "^7.0.3"
