@@ -1,0 +1,130 @@
+{
+  "questions": [
+    {
+      "question": "Dans quel pays se trouve la ville de Marrakech ?",
+      "options": ["Algérie", "Tunisie", "Maroc", "Égypte"],
+      "answer": "Maroc"
+    },
+    {
+      "question": "Quelle est la plus grande planète du système solaire ?",
+      "options": ["Terre", "Jupiter", "Saturne", "Mars"],
+      "answer": "Jupiter"
+    },
+    {
+      "question": "Quel est le plus long fleuve du monde ?",
+      "options": ["Nil", "Amazone", "Yangtsé", "Mississippi"],
+      "answer": "Nil"
+    },
+    {
+      "question": "Quel est le plus grand océan du monde ?",
+      "options": [
+        "Océan Pacifique",
+        "Océan Atlantique",
+        "Océan Indien",
+        "Océan Arctique"
+      ],
+      "answer": "Océan Pacifique"
+    },
+    {
+      "question": "Quel est le pays le plus peuplé du monde ?",
+      "options": ["Inde", "Chine", "États-Unis", "Russie"],
+      "answer": "Chine"
+    },
+    {
+      "question": "Quel est le plus haut sommet d'Europe ?",
+      "options": ["Mont Blanc", "Kilimandjaro", "Everest", "Elbrouz"],
+      "answer": "Elbrouz"
+    },
+    {
+      "question": "Qui a écrit le roman 'Les Misérables' ?",
+      "options": [
+        "Victor Hugo",
+        "Gustave Flaubert",
+        "Émile Zola",
+        "Albert Camus"
+      ],
+      "answer": "Victor Hugo"
+    },
+    {
+      "question": "Dans quelle ville se trouve la Tour Eiffel ?",
+      "options": ["Paris", "Londres", "Berlin", "New York"],
+      "answer": "Paris"
+    },
+    {
+      "question": "Dans quel pays est né Mozart ?",
+      "options": ["Allemagne", "Autriche", "Italie", "France"],
+      "answer": "Autriche"
+    },
+    {
+      "question": "Quel est le plus grand désert du monde ?",
+      "options": ["Sahara", "Kalahari", "Gobi", "Antarctique"],
+      "answer": "Antarctique"
+    },
+
+    {
+      "question": "Quel est le plus grand lac d'Afrique ?",
+      "options": ["Lac Malawi", "Lac Victoria", "Lac Tanganyika", "Lac Tchad"],
+      "answer": "Lac Victoria"
+    },
+    {
+      "question": "Dans quelle ville se trouve le siège de l'Union Européenne ?",
+      "options": ["Paris", "Bruxelles", "Berlin", "Londres"],
+      "answer": "Bruxelles"
+    },
+    {
+      "question": "Qui a peint la Joconde ?",
+      "options": [
+        "Vincent Van Gogh",
+        "Léonard de Vinci",
+        "Pablo Picasso",
+        "Salvador Dali"
+      ],
+      "answer": "Léonard de Vinci"
+    },
+    {
+      "question": "Quel est le plus grand pays d'Amérique du Sud ?",
+      "options": ["Argentine", "Brésil", "Colombie", "Pérou"],
+      "answer": "Brésil"
+    },
+    {
+      "question": "Quelle est la monnaie officielle du Japon ?",
+      "options": ["Dollar", "Euro", "Yen", "Pound"],
+      "answer": "Yen"
+    },
+    {
+      "question": "Dans quelle ville se trouve le Colisée ?",
+      "options": ["Rome", "Athènes", "Paris", "Istanbul"],
+      "answer": "Rome"
+    },
+    {
+      "question": "Qui a écrit 'La Divine Comédie' ?",
+      "options": [
+        "Dante Alighieri",
+        "Miguel de Cervantes",
+        "William Shakespeare",
+        "Goethe"
+      ],
+      "answer": "Dante Alighieri"
+    },
+    {
+      "question": "Quel est le plus grand animal terrestre ?",
+      "options": ["Girafe", "Hippopotame", "Éléphant", "Rhino"],
+      "answer": "Éléphant"
+    },
+    {
+      "question": "Dans quelle ville se trouve la statue de la Liberté ?",
+      "options": ["New York", "Washington D.C.", "Los Angeles", "Miami"],
+      "answer": "New York"
+    },
+    {
+      "question": "Qui a écrit 'Le Petit Prince' ?",
+      "options": [
+        "Antoine de Saint-Exupéry",
+        "Albert Camus",
+        "Jean-Paul Sartre",
+        "Franz Kafka"
+      ],
+      "answer": "Antoine de Saint-Exupéry"
+    }
+  ]
+}
