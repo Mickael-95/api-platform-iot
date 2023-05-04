@@ -3,7 +3,7 @@ var xbee_api = require('xbee-api');
 var C = xbee_api.constants;
 //var storage = require("./storage")
 require('dotenv').config()
-
+const mqtt = require('mqtt');
 
 const SERIAL_PORT = process.env.SERIAL_PORT;
 
@@ -61,7 +61,22 @@ xbeeAPI.parser.on("data", function (frame) {
   if (C.FRAME_TYPE.NODE_IDENTIFICATION === frame.type) {
     // let dataReceived = String.fromCharCode.apply(null, frame.nodeIdentifier);
     console.log("NODE_IDENTIFICATION");
-    console.log(frame)
+    console.log(frame);
+
+    const client = mqtt.connect('mqtt://test.mosquitto.org');
+
+    client.on('connect', function(){
+      client.subscribe('/player/name', function(err){
+        if(!err){
+          client.publish('/player/name', frame.nodeIdentifier)
+        }
+      })
+    });
+    
+    // client.on('message', function(topic, player){
+    //   console.log(topic, player);
+    //   client.end()
+    // })
     //storage.registerSensor(frame.remote64)
 
   } else if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
