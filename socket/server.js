@@ -67,7 +67,7 @@ xbeeAPI.parser.on("data", function (frame) {
     client.on('connect', function () {
       client.subscribe('/player/name', function (err) {
         if (!err) {
-          client.publish('/player/name', frame.nodeIdentifier)
+          client.publish('/player/name', JSON.stringify({nodeIdentifier: frame.nodeIdentifier, remote64: frame.remote64}) )
         }
       })
     });
@@ -85,33 +85,33 @@ xbeeAPI.parser.on("data", function (frame) {
 
     //Envoyer au topic le NI/MAC de qui a appuyé sur le bouton + le timestamp
     
-    const { DIO1, DIO2, DIO3, DIO4 } = frame.digitalSamples;
+    // const { DIO1, DIO2, DIO3, DIO4 } = frame.digitalSamples;
 
-    const turn_red = { // AT Request to be sent
-      type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
-      destination64: "FFFFFFFFFFFFFFFF",
-      command: "D2",
-      commandParameter: [],
-    };
+    // const turn_red = { // AT Request to be sent
+    //   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+    //   destination64: "FFFFFFFFFFFFFFFF",
+    //   command: "D2",
+    //   commandParameter: [],
+    // };
 
-    const turn_green = { // AT Request to be sent
-      type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
-      destination64: frame.remote64,
-      command: "D3",
-      commandParameter: [],
-    };
+    // const turn_green = { // AT Request to be sent
+    //   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+    //   destination64: frame.remote64,
+    //   command: "D3",
+    //   commandParameter: [],
+    // };
 
-    const turn_blue = { // AT Request to be sent
-      type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
-      destination64: frame.remote64,
-      command: "D4",
-      commandParameter: [],
-    };
+    // const turn_blue = { // AT Request to be sent
+    //   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+    //   destination64: frame.remote64,
+    //   command: "D4",
+    //   commandParameter: [],
+    // };
 
 
 
-    xbeeAPI.builder.write(turn_blue);
-    xbeeAPI.builder.write(turn_red);
+    // xbeeAPI.builder.write(turn_blue);
+    // xbeeAPI.builder.write(turn_red);
 
     //storage.registerSample(frame.remote64,frame.analogSamples.AD0 )
 
