@@ -81,6 +81,16 @@ xbeeAPI.parser.on("data", function (frame) {
   } else if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
     const timestamp = new Date().getTime();
     console.log("ZIGBEE_IO_DATA_SAMPLE_RX - " + timestamp)
+
+    const client = mqtt.connect('ws://broker.emqx.io:8083/mqtt');
+
+    client.on('connect', function () {
+      client.subscribe('/player/playerTurn', function (err) {
+        if (!err) {
+          client.publish('/player/playerTurn', JSON.stringify({nodeIdentifier: frame.nodeIdentifier, remote64: frame.remote64, timestamp: timestamp}) )
+        }
+      })
+    });
     // console.log(frame)
 
     //Envoyer au topic le NI/MAC de qui a appuyé sur le bouton + le timestamp
