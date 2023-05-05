@@ -19,6 +19,9 @@ export default function Quiz() {
   const [secondaryTimerActive, setSecondaryTimerActive] = useState(false);
   const [teamName, setTeamName] = useState('');
   const [prevMainTimer, setPrevMainTimer] = useState(null);
+  const [resultMessage, setResultMessage] = useState('');
+  const [teamAPoints, setTeamAPoints] = useState(0);
+const [teamBPoints, setTeamBPoints] = useState(0);
 
   useEffect(() => {
     if (!mainTimerActive) return;
@@ -56,6 +59,27 @@ export default function Quiz() {
     }
   }, [secondaryTimerActive, secondaryTimer]);
 
+  useEffect(() => {
+    if (mainTimerActive && mainTimer === 0) {
+      setAnswerStatus('correct');
+      setMainTimerActive(false);
+      setResultMessage('Temps épuisé');
+  
+      const newBackgrounds = quizData.questions[currentQuestion].options.reduce(
+        (backgrounds, currentOption, index) => {
+          if (currentOption === quizData.questions[currentQuestion].answer) {
+            backgrounds[index] = '#27ae60';
+          } else {
+            backgrounds[index] = '#c0392b';
+          }
+          return backgrounds;
+        },
+        {}
+      );
+      setOptionBackgrounds(newBackgrounds);
+    }
+  }, [mainTimerActive, mainTimer]);
+
   const handleBuzzerPress = (team) => {
     if (!secondaryTimerActive && mainTimer > 0) {
       setPrevMainTimer(mainTimer);
@@ -75,13 +99,20 @@ export default function Quiz() {
 
   const handleAnswerClick = (option) => {
     if (answerStatus === 'correct') return;
-
+  
     setSelectedOption(option);
-
+  
     if (option === quizData.questions[currentQuestion].answer) {
       setAnswerStatus('correct');
       setMainTimerActive(false);
       setSecondaryTimerActive(false);
+  
+      if (teamName === 'Équipe A') {
+        setTeamAPoints(teamAPoints + 1);
+      } else if (teamName === 'Équipe B') {
+        setTeamBPoints(teamBPoints + 1);
+      }
+  
       const newBackgrounds = quizData.questions[currentQuestion].options.reduce(
         (backgrounds, currentOption, index) => {
           backgrounds[index] = currentOption === option ? '#27ae60' : '#c0392b';
@@ -143,7 +174,7 @@ export default function Quiz() {
     if (answerStatus === 'correct') {
       return (
         <div className="correct-answer">
-          <span className="result-symbol">&#10004;</span> Bonne réponse !
+          <span className="result-symbol">&#10004;</span> {resultMessage}
           <button className="next-question" onClick={handleNextQuestion}>
             Question suivante
           </button>
@@ -160,15 +191,27 @@ export default function Quiz() {
 
   return (
     <div className="quiz-container">
+      <div className="containerPoint">
+        <h3>
+            Équipe A : 
+            <p className="points">{teamAPoints} points{teamAPoints > 1 ? 's' : ''}</p>
+        </h3>
+        <h3>
+            Équipe B : 
+            <p className="points">{teamBPoints} points{teamBPoints > 1 ? 's' : ''}</p>
+        </h3>
+      </div>
       {renderQuestion()}
       {renderResultMessage()}
       <div className="timer-container">
         <div className="main-timer">{mainTimer} secondes</div>
-        <div className="secondary-timer">{secondaryTimerActive ? `${secondaryTimer} secondes` : ''}</div>
       </div>
-      <div className="team-name">{teamName}</div>
-      {/* Simulate buzzer press */}
+      <div className="containerTeamName">
+        <div className="team-name">{teamName}</div>
+        <div className="secondary-timer">{secondaryTimerActive ? `(${secondaryTimer} secondes)` : ''}</div>
+      </div>
       <button onClick={() => handleBuzzerPress('Équipe A')}>Simuler buzzer Équipe A</button>
+      <button onClick={() => handleBuzzerPress('Équipe B')}>Simuler buzzer Équipe B</button>
     </div>
   );
 }
