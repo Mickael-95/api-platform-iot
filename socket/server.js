@@ -3,7 +3,7 @@ var xbee_api = require('xbee-api');
 var C = xbee_api.constants;
 //var storage = require("./storage")
 require('dotenv').config()
-
+const mqtt = require('mqtt');
 
 const SERIAL_PORT = process.env.SERIAL_PORT;
 
@@ -57,21 +57,81 @@ xbeeAPI.parser.on("data", function (frame) {
     console.log(">> ZIGBEE_RECEIVE_PACKET >", dataReceived);
 
   }
-
   if (C.FRAME_TYPE.NODE_IDENTIFICATION === frame.type) {
     // let dataReceived = String.fromCharCode.apply(null, frame.nodeIdentifier);
     console.log("NODE_IDENTIFICATION");
-    console.log(frame)
+    console.log(frame);
+
+    // Send NI and MAC to the /player/name topic when button pressed
+
+    const client = mqtt.connect('ws://broker.emqx.io:8083/mqtt');
+
+    client.on('connect', function () {
+      client.subscribe('/player/name', function (err) {
+        if (!err) {
+          client.publish('/player/name', JSON.stringify({nodeIdentifier: frame.nodeIdentifier, remote64: frame.remote64}) )
+        }
+      })
+    });
+
+    client.on('message', function(topic, player){
+      console.log(topic, player);
+      client.end()
+    })
     //storage.registerSensor(frame.remote64)
 
   } else if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
+    const timestamp = new Date().getTime();
+    console.log("ZIGBEE_IO_DATA_SAMPLE_RX - " + timestamp)
 
-    console.log("ZIGBEE_IO_DATA_SAMPLE_RX")
-    console.log(frame)
+    // Send NI and MAC to the /player/playerTurn topic when button pressed
+
+    const client = mqtt.connect('ws://broker.emqx.io:8083/mqtt');
+
+    client.on('connect', function () {
+      client.subscribe('/player/playerTurn', function (err) {
+        if (!err) {
+          client.publish('/player/playerTurn', JSON.stringify({nodeIdentifier: frame.nodeIdentifier, remote64: frame.remote64}) )
+        }
+      })
+    });
+    // console.log(frame)
+
+    //Envoyer au topic le NI/MAC de qui a appuyé sur le bouton + le timestamp
+    
+    // const { DIO1, DIO2, DIO3, DIO4 } = frame.digitalSamples;
+
+    // const turn_red = { // AT Request to be sent
+    //   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+    //   destination64: "FFFFFFFFFFFFFFFF",
+    //   command: "D2",
+    //   commandParameter: [],
+    // };
+
+    // const turn_green = { // AT Request to be sent
+    //   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+    //   destination64: frame.remote64,
+    //   command: "D3",
+    //   commandParameter: [],
+    // };
+
+    // const turn_blue = { // AT Request to be sent
+    //   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+    //   destination64: frame.remote64,
+    //   command: "D4",
+    //   commandParameter: [],
+    // };
+
+
+
+    // xbeeAPI.builder.write(turn_blue);
+    // xbeeAPI.builder.write(turn_red);
+
     //storage.registerSample(frame.remote64,frame.analogSamples.AD0 )
 
   } else if (C.FRAME_TYPE.REMOTE_COMMAND_RESPONSE === frame.type) {
-    console.log("REMOTE_COMMAND_RESPONSE")
+    const timestamp = new Date().getTime();
+    console.log("REMOTE_COMMAND_RESPONSE - " + timestamp)
     console.log(frame);
     let dataReceived = String.fromCharCode.apply(null, frame.commandData)
     console.log(dataReceived);

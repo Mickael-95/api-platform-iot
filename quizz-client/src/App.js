@@ -3,7 +3,6 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Home from './views/Home';
 import QuizPage from './views/QuizPage';
 
-
 function App() {
   return (
     <div className="App"> 
