@@ -1,29 +1,28 @@
 import { useState, useEffect } from "react";
 import mqtt from "mqtt";
+import "./Home.css";
+import Loading from "../components/loading";
 
-import Loading from '../components/loading';
-import '../App.css';
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(true);
   const [client, setClient] = useState(null);
-  // const [payload, setPayload] = useState(null);
-  const [connectStatus, setConnectStatus] = useState("");
+  // const [connectStatus, setConnectStatus] = useState("");
   const [player, setPlayer] = useState([]);
 
   const mqttConnect = (host) => {
-    setConnectStatus("Connecting");
+    setIsLoading(true);
     setClient(mqtt.connect(host));
   };
 
-  useEffect(() => {
-  }, [player])
+  useEffect(() => {}, [player]);
 
   useEffect(() => {
     if (client) {
       console.log(client);
       client.on("connect", () => {
-        setConnectStatus("Connected");
-        client.subscribe('/player/name', function (err) {
-          console.log(err)
+        setIsLoading(false);
+        client.subscribe("/player/name", function (err) {
+          console.log(err);
         });
       });
       client.on("error", (err) => {
@@ -31,7 +30,7 @@ export default function Home() {
         client.end();
       });
       client.on("reconnect", () => {
-        setConnectStatus("Reconnecting");
+        setIsLoading(true);
       });
       client.on("message", (topic, message) => {
         // setPayload(payload);
@@ -47,27 +46,18 @@ export default function Home() {
     mqttConnect("ws://broker.emqx.io:8083/mqtt");
   }, []);
 
-
   return (
     <div>
-      <p>{connectStatus}</p>
+      {isLoading && <Loading />}
       <h1>Bienvenue sur quizz life aaaaaa</h1>
       <h2>Liste des participants:</h2>
-      <ul>
-      <p>Players:</p>
-      {player.map((item, key) => 
-        <li key={key}>
-          {item.nodeIdentifier} 
-        </li>
-      )}
+      <ul className="playersList">
+        <p>Players:</p>
+        {player.map((item, key) => (
+          <li key={key}>{item.nodeIdentifier}</li>
+        ))}
       </ul>
-      <button>
-        Start Game
-      </button>
+      <button>Start Game</button>
     </div>
   );
 }
-
-      <div className="bodyhome">
-  const [isLoading, setIsLoading] = useState(true);
-      {isLoading && <Loading />}
