@@ -44,8 +44,11 @@ serialport.on("open", function () {
 // All frames parsed by the XBee will be emitted here
 
 // storage.listSensors().then((sensors) => sensors.forEach((sensor) => console.log(sensor.data())))
+var isOpened = true;
+var remote64FirstPlayer = '';
 
 xbeeAPI.parser.on("data", function (frame) {
+
 
   //on new device is joined, register it
 
@@ -59,8 +62,8 @@ xbeeAPI.parser.on("data", function (frame) {
   }
   if (C.FRAME_TYPE.NODE_IDENTIFICATION === frame.type) {
     // let dataReceived = String.fromCharCode.apply(null, frame.nodeIdentifier);
-    console.log("NODE_IDENTIFICATION");
-    console.log(frame);
+    // console.log("NODE_IDENTIFICATION");
+    // console.log(frame);
 
     // Send NI and MAC to the /player/name topic when button pressed
 
@@ -82,37 +85,12 @@ xbeeAPI.parser.on("data", function (frame) {
     //storage.registerSensor(frame.remote64)
 
   } else if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
-    const timestamp = new Date().getTime();
-    console.log("ZIGBEE_IO_DATA_SAMPLE_RX - " + timestamp)
-    console.log(frame)
-
-    // Send NI and MAC to the /player/playerTurn topic when button pressed
-
     const client = mqtt.connect('ws://broker.emqx.io:8083/mqtt');
-    var remote64FirstPlayer = '';
 
-    client.on('connect', function () {
-      client.subscribe('/player/playerTurn', function (err) {
-        if (!err) {
-          client.publish('/player/playerTurn', frame.remote64);
-          client.end();
-        }
-      })
-    });
+    if (isOpened) {
+      // console.log("Here : isOpened");
+      remote64FirstPlayer = frame.remote64;
 
-    // Envoie de tout les players qui ont buzzé au front, front nous renvoie l'adresse mac du premier, la led du premier passe en bleu, les autres en rouge
-
-    client.on('connect', function () {
-      client.subscribe('/player/returnPlayerTurn', function (err) {
-        if (err) {
-          console.log(err);
-        }
-      })
-    });
-
-    client.on("message", (topic, message) => {
-      remote64FirstPlayer = message.toString();
-      console.log(remote64FirstPlayer);
       const turn_red = { // AT Request to be sent
         type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
         destination64: "FFFFFFFFFFFFFFFF",
@@ -125,10 +103,57 @@ xbeeAPI.parser.on("data", function (frame) {
         command: "D4",
         commandParameter: [04],
       };
-      console.log(remote64FirstPlayer);
+      // console.log(remote64FirstPlayer);
       xbeeAPI.builder.write(turn_blue);
       xbeeAPI.builder.write(turn_red);
-      client.end();
+
+      client.on('connect', function () {
+        client.subscribe('/player/playerTurn', function (err) {
+          if (!err) {
+            client.publish('/player/playerTurn', remote64FirstPlayer);
+            client.end();
+          }
+        })
+      });
+
+      isOpened = false;
+    }
+
+
+    client.on('connect', function () {
+      client.subscribe('/quizz/reset', function (err) {
+        if (err) {
+          console.log(err);
+        }
+      })
+    });
+
+    client.on("message", (topic, message) => {
+
+      if (message.toString() === 'reset') {
+
+        console.log("Here : reset");
+        console.log(message.toString());
+        isOpened = true;
+        remote64FirstPlayer = ''
+
+        const reset_red = { // AT Request to be sent
+          type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+          destination64: "FFFFFFFFFFFFFFFF",
+          command: "D2",
+          commandParameter: [00],
+        };
+        const reset_blue = { // AT Request to be sent
+          type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+          destination64: "FFFFFFFFFFFFFFFF",
+          command: "D4",
+          commandParameter: [00],
+        };
+        xbeeAPI.builder.write(reset_blue);
+        xbeeAPI.builder.write(reset_red);
+      }
+
+      client.end()
     });
 
     // Change LED color depending on who buzzed first
@@ -163,14 +188,14 @@ xbeeAPI.parser.on("data", function (frame) {
 
   } else if (C.FRAME_TYPE.REMOTE_COMMAND_RESPONSE === frame.type) {
     const timestamp = new Date().getTime();
-    console.log("REMOTE_COMMAND_RESPONSE - " + timestamp)
-    console.log(frame);
+    // console.log("REMOTE_COMMAND_RESPONSE - " + timestamp)
+    // console.log(frame);
     let dataReceived = String.fromCharCode.apply(null, frame.commandData)
-    console.log(dataReceived);
+    // console.log(dataReceived);
   } else {
-    console.debug(frame);
+    // console.debug(frame);
     let dataReceived = String.fromCharCode.apply(null, frame.commandData)
-    console.log(dataReceived);
+    // console.log(dataReceived);
   }
 
 });

@@ -20,7 +20,7 @@ export default function Quiz() {
   const [secondaryTimerActive, setSecondaryTimerActive] = useState(false);
   const [teamName, setTeamName] = useState('');
   const [prevMainTimer, setPrevMainTimer] = useState(null);
-  const [playerTurn, setPlayerTurn] = useState([]);
+  const [playerTurn, setPlayerTurn] = useState('');
   const [client, setClient] = useState(null);
   const [resultMessage, setResultMessage] = useState('');
   const [teamAPoints, setTeamAPoints] = useState(0);
@@ -35,7 +35,7 @@ export default function Quiz() {
 
   useEffect(() => {
     if (client) {
-      console.log(client);
+      // console.log(client);
       client.on("connect", () => {
         // setIsLoading(false);
         client.subscribe("/player/playerTurn", function (err) {
@@ -51,9 +51,8 @@ export default function Quiz() {
       });
       client.on("message", (topic, message) => {
         const data = message.toString();
-        console.log(data);
-        setPlayerTurn((playerTurn) => [...playerTurn, data]);
-        client.publish('/player/returnPlayerTurn', playerTurn[0] );
+        // console.log(data);
+        setPlayerTurn(data);
       });
     }
   }, [client]);
@@ -183,6 +182,7 @@ export default function Quiz() {
       setSecondaryTimer(5);
       setSecondaryTimerActive(false);
       setTeamName('');
+      client.publish('/quizz/reset', 'reset');
     }
   };
 
