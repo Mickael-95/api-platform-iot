@@ -12,7 +12,7 @@ export default function Home() {
   const mqttConnect = (host) => {
     setIsLoading(true);
     setClient(mqtt.connect(host));
-  };*/
+  };
 
   useEffect(() => {}, [player]);
 
