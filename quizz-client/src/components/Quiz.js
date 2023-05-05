@@ -197,7 +197,7 @@ export default function Quiz() {
     const question = quizData.questions[currentQuestion];
     return (
       <div>
-        <h2>{question.question}</h2>
+        <p className="question">{question.question}</p>
         <div className="options-wrapper">
           {question.options.map((option, index) => (
             <div key={index} className="option-container">

@@ -55,7 +55,7 @@ export default function Home() {
 
   return (
     <div className="home">
-      <h1>Bienvenue sur quizz life aaaaaa</h1>
+      <h1>Bienvenue sur quizz life</h1>
       <h2>Liste des participants:</h2>
       {isLoading ? (
         <Loading />
