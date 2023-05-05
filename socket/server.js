@@ -70,9 +70,9 @@ xbeeAPI.parser.on("data", function (frame) {
     const client = mqtt.connect('ws://broker.emqx.io:8083/mqtt');
 
     client.on('connect', function () {
-      client.subscribe('/player/name', function (err) {
+      client.subscribe('/quiz/player/name', function (err) {
         if (!err) {
-          client.publish('/player/name', JSON.stringify({ nodeIdentifier: frame.nodeIdentifier, remote64: frame.remote64 }))
+          client.publish('/quiz/player/name', JSON.stringify({ nodeIdentifier: frame.nodeIdentifier, remote64: frame.remote64 }))
           client.end();
         }
       })
@@ -108,9 +108,9 @@ xbeeAPI.parser.on("data", function (frame) {
       xbeeAPI.builder.write(turn_red);
 
       client.on('connect', function () {
-        client.subscribe('/player/playerTurn', function (err) {
+        client.subscribe('/quiz/playerTurn', function (err) {
           if (!err) {
-            client.publish('/player/playerTurn', remote64FirstPlayer);
+            client.publish('/quiz/playerTurn', remote64FirstPlayer);
             client.end();
           }
         })

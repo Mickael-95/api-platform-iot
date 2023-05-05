@@ -38,7 +38,7 @@ export default function Quiz() {
       // console.log(client);
       client.on("connect", () => {
         // setIsLoading(false);
-        client.subscribe("/player/playerTurn", function (err) {
+        client.subscribe("/quiz/playerTurn", function (err) {
           console.log(err);
         });
       });

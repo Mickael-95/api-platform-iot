@@ -28,7 +28,7 @@ export default function Home() {
       console.log(client);
       client.on("connect", () => {
         setIsLoading(false);
-        client.subscribe("/player/name", function (err) {
+        client.subscribe("/quiz/player/name", function (err) {
           console.log(err);
         });
       });
