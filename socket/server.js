@@ -62,6 +62,8 @@ xbeeAPI.parser.on("data", function (frame) {
     console.log("NODE_IDENTIFICATION");
     console.log(frame);
 
+    // Send NI and MAC to the /player/name topic when button pressed
+
     const client = mqtt.connect('ws://broker.emqx.io:8083/mqtt');
 
     client.on('connect', function () {
@@ -82,12 +84,14 @@ xbeeAPI.parser.on("data", function (frame) {
     const timestamp = new Date().getTime();
     console.log("ZIGBEE_IO_DATA_SAMPLE_RX - " + timestamp)
 
+    // Send NI and MAC to the /player/playerTurn topic when button pressed
+
     const client = mqtt.connect('ws://broker.emqx.io:8083/mqtt');
 
     client.on('connect', function () {
       client.subscribe('/player/playerTurn', function (err) {
         if (!err) {
-          client.publish('/player/playerTurn', JSON.stringify({nodeIdentifier: frame.nodeIdentifier, remote64: frame.remote64, timestamp: timestamp}) )
+          client.publish('/player/playerTurn', JSON.stringify({nodeIdentifier: frame.nodeIdentifier, remote64: frame.remote64}) )
         }
       })
     });
