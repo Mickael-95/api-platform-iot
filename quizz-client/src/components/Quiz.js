@@ -194,11 +194,11 @@ const [teamBPoints, setTeamBPoints] = useState(0);
       <div className="containerPoint">
         <h3>
             Équipe A : 
-            <p className="points">{teamAPoints} points{teamAPoints > 1 ? 's' : ''}</p>
+            <p className="points">{teamAPoints} point{teamAPoints > 1 ? 's' : ''}</p>
         </h3>
         <h3>
             Équipe B : 
-            <p className="points">{teamBPoints} points{teamBPoints > 1 ? 's' : ''}</p>
+            <p className="points">{teamBPoints} point{teamBPoints > 1 ? 's' : ''}</p>
         </h3>
       </div>
       {renderQuestion()}
