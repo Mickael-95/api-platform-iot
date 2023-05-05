@@ -22,7 +22,7 @@
   .quiz-option {
     width: 100%;
     background-color: #f0f0f0;
-    border: none;
+    border: 2px solid black;
     padding: 15px;
     cursor: pointer;
     border-radius: 5px;
@@ -31,7 +31,7 @@
 }
   
   h2 {
-    font-size: 32px; /* Increase font size for question */
+    font-size: 39px; /* Increase font size for question */
   }
   
   .correct-answer,
@@ -106,7 +106,6 @@
   .containerPoint{
     display: flex;
     justify-content: space-evenly;
-
   }
 
   .points{
