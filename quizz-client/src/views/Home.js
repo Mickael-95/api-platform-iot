@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import mqtt from "mqtt";
 import "./Home.css";
 import Loading from "../components/loading";
+import { useHistory } from "react-router-dom";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -9,10 +10,16 @@ export default function Home() {
   // const [connectStatus, setConnectStatus] = useState("");
   const [player, setPlayer] = useState([]);
 
+  let history = useHistory();
+
+  function startGame() {
+    history.push("/quiz");
+  }
+
   const mqttConnect = (host) => {
     setIsLoading(true);
     setClient(mqtt.connect(host));
-  };*/
+  };
 
   useEffect(() => {}, [player]);
 
@@ -42,22 +49,27 @@ export default function Home() {
     }
   }, [client]);
 
-  /*useEffect(() => {
+  useEffect(() => {
     mqttConnect("ws://broker.emqx.io:8083/mqtt");
-  }, []);*/
+  }, []);
 
   return (
     <div className="home">
-      {isLoading && <Loading />}
       <h1>Bienvenue sur quizz life aaaaaa</h1>
       <h2>Liste des participants:</h2>
-      <ul className="playersList">
-        <p>Players:</p>
-        {player.map((item, key) => (
-          <li key={key}>{item.nodeIdentifier}</li>
-        ))}
-      </ul>
-      <button>Start Game</button>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <div>
+          <ul className="playersList">
+            <p>Players:</p>
+            {player.map((item, key) => (
+              <li key={key}>{item.nodeIdentifier}</li>
+            ))}
+          </ul>
+          <button onClick={startGame}>Start Game</button>
+        </div>
+      )}
     </div>
   );
 }

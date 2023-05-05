@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import quizData from "../questions.json";
 import "../Quiz.css";
+import mqtt from "mqtt";
 
 export default function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -19,9 +20,47 @@ export default function Quiz() {
   const [secondaryTimerActive, setSecondaryTimerActive] = useState(false);
   const [teamName, setTeamName] = useState('');
   const [prevMainTimer, setPrevMainTimer] = useState(null);
+  const [playerTurn, setPlayerTurn] = useState([]);
+  const [client, setClient] = useState(null);
   const [resultMessage, setResultMessage] = useState('');
   const [teamAPoints, setTeamAPoints] = useState(0);
-const [teamBPoints, setTeamBPoints] = useState(0);
+  const [teamBPoints, setTeamBPoints] = useState(0);
+
+  const mqttConnect = (host) => {
+    // setIsLoading(true);
+    setClient(mqtt.connect(host));
+  };
+
+  useEffect(() => {}, [playerTurn]);
+
+  useEffect(() => {
+    if (client) {
+      console.log(client);
+      client.on("connect", () => {
+        // setIsLoading(false);
+        client.subscribe("/player/playerTurn", function (err) {
+          console.log(err);
+        });
+      });
+      client.on("error", (err) => {
+        console.error("Connection error: ", err);
+        client.end();
+      });
+      client.on("reconnect", () => {
+        // setIsLoading(true);
+      });
+      client.on("message", (topic, message) => {
+        const data = message.toString();
+        console.log(data);
+        setPlayerTurn((playerTurn) => [...playerTurn, data]);
+        client.publish('/player/returnPlayerTurn', playerTurn[0] );
+      });
+    }
+  }, [client]);
+
+  useEffect(() => {
+    mqttConnect("ws://broker.emqx.io:8083/mqtt");
+  }, []);
 
   useEffect(() => {
     if (!mainTimerActive) return;
