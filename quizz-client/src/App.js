@@ -1,18 +1,18 @@
-import './App.css';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import Home from './views/Home';
-import QuizPage from './views/QuizPage';
+import "./App.css";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import Home from "./views/Home";
+import QuizPage from "./views/QuizPage";
 
 function App() {
   return (
-    <div className="App"> 
+    <div className="App">
       <BrowserRouter>
         <Switch>
-          <Route exact path="/" component={QuizPage} />
+          <Route exact path="/" component={Home} />
           <Route exact path="/quiz" component={QuizPage} />
         </Switch>
       </BrowserRouter>
-    </div> 
+    </div>
   );
 }
 
