@@ -12,7 +12,7 @@ export default function Home() {
   const mqttConnect = (host) => {
     setIsLoading(true);
     setClient(mqtt.connect(host));
-  };
+  };*/
 
   useEffect(() => {}, [player]);
 
@@ -42,12 +42,12 @@ export default function Home() {
     }
   }, [client]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     mqttConnect("ws://broker.emqx.io:8083/mqtt");
-  }, []);
+  }, []);*/
 
   return (
-    <div>
+    <div className="home">
       {isLoading && <Loading />}
       <h1>Bienvenue sur quizz life aaaaaa</h1>
       <h2>Liste des participants:</h2>
