@@ -1,3 +1,7 @@
+.home {
+    background-image: url("../assets/cool-background.png");
+}
+
 .playersList {
     padding: 0;
 }
