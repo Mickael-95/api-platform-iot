@@ -69,12 +69,13 @@ xbeeAPI.parser.on("data", function (frame) {
     client.on('connect', function () {
       client.subscribe('/player/name', function (err) {
         if (!err) {
-          client.publish('/player/name', JSON.stringify({nodeIdentifier: frame.nodeIdentifier, remote64: frame.remote64}) )
+          client.publish('/player/name', JSON.stringify({ nodeIdentifier: frame.nodeIdentifier, remote64: frame.remote64 }))
+          client.end();
         }
       })
     });
 
-    client.on('message', function(topic, player){
+    client.on('message', function (topic, player) {
       console.log(topic, player);
       client.end()
     })
@@ -83,29 +84,62 @@ xbeeAPI.parser.on("data", function (frame) {
   } else if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
     const timestamp = new Date().getTime();
     console.log("ZIGBEE_IO_DATA_SAMPLE_RX - " + timestamp)
+    console.log(frame)
 
     // Send NI and MAC to the /player/playerTurn topic when button pressed
 
     const client = mqtt.connect('ws://broker.emqx.io:8083/mqtt');
+    var remote64FirstPlayer = '';
 
     client.on('connect', function () {
       client.subscribe('/player/playerTurn', function (err) {
         if (!err) {
-          client.publish('/player/playerTurn', JSON.stringify({nodeIdentifier: frame.nodeIdentifier, remote64: frame.remote64}) )
+          client.publish('/player/playerTurn', frame.remote64);
+          client.end();
         }
       })
     });
-    // console.log(frame)
 
-    //Envoyer au topic le NI/MAC de qui a appuyé sur le bouton + le timestamp
-    
+    // Envoie de tout les players qui ont buzzé au front, front nous renvoie l'adresse mac du premier, la led du premier passe en bleu, les autres en rouge
+
+    client.on('connect', function () {
+      client.subscribe('/player/returnPlayerTurn', function (err) {
+        if (err) {
+          console.log(err);
+        }
+      })
+    });
+
+    client.on("message", (topic, message) => {
+      remote64FirstPlayer = message.toString();
+      console.log(remote64FirstPlayer);
+      const turn_red = { // AT Request to be sent
+        type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+        destination64: "FFFFFFFFFFFFFFFF",
+        command: "D2",
+        commandParameter: [04],
+      };
+      const turn_blue = { // AT Request to be sent
+        type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+        destination64: remote64FirstPlayer,
+        command: "D4",
+        commandParameter: [04],
+      };
+      console.log(remote64FirstPlayer);
+      xbeeAPI.builder.write(turn_blue);
+      xbeeAPI.builder.write(turn_red);
+      client.end();
+    });
+
+    // Change LED color depending on who buzzed first
+
     // const { DIO1, DIO2, DIO3, DIO4 } = frame.digitalSamples;
 
     // const turn_red = { // AT Request to be sent
     //   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
     //   destination64: "FFFFFFFFFFFFFFFF",
     //   command: "D2",
-    //   commandParameter: [],
+    //   commandParameter: [04],
     // };
 
     // const turn_green = { // AT Request to be sent
@@ -117,12 +151,10 @@ xbeeAPI.parser.on("data", function (frame) {
 
     // const turn_blue = { // AT Request to be sent
     //   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
-    //   destination64: frame.remote64,
+    //   destination64: remote64FirstPlayer,
     //   command: "D4",
-    //   commandParameter: [],
+    //   commandParameter: [04],
     // };
-
-
 
     // xbeeAPI.builder.write(turn_blue);
     // xbeeAPI.builder.write(turn_red);
